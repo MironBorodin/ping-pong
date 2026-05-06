@@ -9,10 +9,10 @@ class GameSprite(pygame.sprite.Sprite):
     def __init__(self, image, speed, x, y, w, h):
         super().__init__()
         self.image = pygame.transform.scale(
-            pygame.image.load(image), (w, h)
+            pygame.image.load(image), (w, h-8)
             )
         self.speed = speed
-        self.rect = self.image.get_rect()
+        self.rect = pygame.Rect(x, y, w, h)
         self.rect.x = x
         self.rect.y = y
 
