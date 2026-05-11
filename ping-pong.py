@@ -6,6 +6,8 @@ BACK = (200, 255, 255)
 game = True
 speed_x = 3
 speed_y = 3
+GREEN = (0, 255, 0)
+finish = False
 
 class GameSprite(pygame.sprite.Sprite):
     def __init__(self, image, speed, x, y, w, h):
@@ -41,6 +43,11 @@ window = pygame.display.set_mode((win_width, win_height))
 window.fill(BACK)
 clock = pygame.time.Clock()
 
+pygame.font.init()
+font = pygame.font.Font(None, 70)
+win_l = font.render('PLAYER LEFT WIN!', True, GREEN)
+win_r = font.render('PLAYER RIGHT WIN!', True, GREEN)
+
 player_l = Player('rocket.jpg', 4, 30, 200, 50, 158)
 player_r = Player('rocket.jpg', 4, 520, 200, 50, 158)
 ball = GameSprite('ball.png', 4, 200, 200, 58, 58)
@@ -50,18 +57,28 @@ while game:
         if event.type == pygame.QUIT:
             game = False
 
-    if ball.rect.y >= win_height-50 or ball.rect.y <= 0:
-        speed_y *= -1
+    if not finish:
+        if ball.rect.y >= win_height-50 or ball.rect.y <= 0:
+            speed_y *= -1
 
-    if pygame.sprite.collide_rect(ball, player_l) or pygame.sprite.collide_rect(ball, player_r):
-        speed_x *= -1
+        if pygame.sprite.collide_rect(ball, player_l) or pygame.sprite.collide_rect(ball, player_r):
+            speed_x *= -1
 
-    ball.rect.x += speed_x
-    ball.rect.y += speed_y
-    player_l.reset()
-    player_r.reset()
-    ball.reset()
-    player_l.update_l()
-    player_r.update_r()
+        if ball.rect.x <= 0:
+            finish = True
+            window.blit(win_r, (50, 200))
+        
+        if ball.rect.x >= win_width-54:
+            finish = True
+            window.blit(win_l, (50, 200))
+
+
+        ball.rect.x += speed_x
+        ball.rect.y += speed_y
+        player_l.reset()
+        player_r.reset()
+        ball.reset()
+        player_l.update_l()
+        player_r.update_r()
     clock.tick(40)
     pygame.display.update()
